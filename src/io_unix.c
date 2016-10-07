@@ -19,11 +19,12 @@ int io_waitfd(int *fd, int sw, timeout_t *tm) {
     struct timeval tv;
     struct timeval *tp;
     double t;
+    int rc;
+
     fd_set rfds;
     fd_set wfds;
     fd_set *rp;
     fd_set *wp;
-    int rc;
 
     if (*fd >= FD_SETSIZE)
         return EINVAL;

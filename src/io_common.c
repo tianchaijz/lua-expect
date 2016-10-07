@@ -12,6 +12,7 @@ const char *io_strerror(int err) {
     case IO_TIMEOUT:
         return "timeout";
     default:
+        perror("unknown");
         return "unknown error";
     }
 }

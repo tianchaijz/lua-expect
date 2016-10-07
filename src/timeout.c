@@ -19,9 +19,8 @@ void timeout_init(timeout_t *tm, double block, double total) {
     tm->total = total;
 }
 
-void *timeout_markstart(timeout_t *tm) {
+void timeout_markstart(timeout_t *tm) {
     tm->start = timeout_gettime();
-    return tm;
 }
 
 /*-------------------------------------------------------------------------*\

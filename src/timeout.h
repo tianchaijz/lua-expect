@@ -23,7 +23,7 @@ typedef struct timeout_s {
 * Timeout management functions
 \*=========================================================================*/
 void timeout_init(timeout_t *tm, double block, double total);
-void *timeout_markstart(timeout_t *tm);
+void timeout_markstart(timeout_t *tm);
 double timeout_get(timeout_t *tm);
 double timeout_getretry(timeout_t *tm);
 double timeout_getstart(timeout_t *tm);

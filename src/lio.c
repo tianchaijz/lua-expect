@@ -77,7 +77,8 @@ static int lio_read(lua_State *L) {
     buf = (char *)calloc(size, sizeof(char));
 
     timeout_t tm;
-    timeout_init(&tm, 0, lua_tonumber(L, 3));
+    timeout_init(&tm, -1, lua_tonumber(L, 3));
+    timeout_markstart(&tm);
 
     rc = io_read(&fd, buf, size, &got, &tm);
     if (rc != IO_DONE) {
@@ -120,7 +121,8 @@ static int lio_write(lua_State *L) {
     }
 
     timeout_t tm;
-    timeout_init(&tm, 0, lua_tonumber(L, 3));
+    timeout_init(&tm, -1, lua_tonumber(L, 3));
+    timeout_markstart(&tm);
 
     rc = io_write(&fd, data, size, &sent, &tm);
     if (rc != IO_DONE) {

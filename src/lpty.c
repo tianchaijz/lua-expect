@@ -195,7 +195,7 @@ static int lpty_open(lua_State *L) {
 
     top = lua_gettop(L);
 
-    if (top != 3 || !lua_isnumber(L, 1) || !lua_isnumber(L, 2))
+    if (top != 2 || !lua_isnumber(L, 1) || !lua_isnumber(L, 2))
         return luaL_error(L, "open(cols: int, rows: int)");
 
     winp.ws_xpixel = 0;
