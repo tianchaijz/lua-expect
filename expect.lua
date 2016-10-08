@@ -1,4 +1,4 @@
-package.cpath = package.cpath .. "lib/?.so;lib/?.dylib;;"
+package.cpath = package.cpath .. ";lib/?.so;lib/?.dylib;;"
 
 local io = require "io"
 local lio = require "lio"
@@ -14,9 +14,10 @@ local _M = {}
 local mt = { __index = _M }
 
 
-function _M.new(cols, rows, timeout)
+function _M.new(cols, rows, timeout, blocking)
     cols = tonumber(cols) or 128
     rows = tonumber(rows) or 64
+    -- -1: no time limit
     timeout = tonumber(timeout) or -1
 
     local pty, err = lpty.open(cols, rows)
@@ -24,14 +25,16 @@ function _M.new(cols, rows, timeout)
         return nil, err
     end
 
-    local ok, err = lio.setnonblocking(pty.master)
-    if not ok then
-        return nil, err
-    end
+    if blocking == false then
+        local ok, err = lio.setnonblocking(pty.master)
+        if not ok then
+            return nil, err
+        end
 
-    ok, err = lio.setnonblocking(pty.slave)
-    if not ok then
-        return nil, err
+        ok, err = lio.setnonblocking(pty.slave)
+        if not ok then
+            return nil, err
+        end
     end
 
     return setmetatable({
@@ -49,8 +52,9 @@ function _M.spawn(self, file, args, cwd)
 
     self.fresh = true
 
-    return lpty.spawn(self.master, self.slave,
-                      file, args, {}, cwd, self.cols, self.rows)
+    return lpty.spawn(self.master, self.slave, file, args,
+                      { "PATH=/bin:/usr/bin:/usr/sbin:/usr/local/bin" },
+                      cwd, self.cols, self.rows)
 end
 
 
