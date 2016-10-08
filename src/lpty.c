@@ -33,7 +33,7 @@ static int lpty_login_tty(int slave_fd) {
             close(i);
 #ifdef TIOCSCTTY
     if (ioctl(slave_fd, TIOCSCTTY, NULL) < 0) {
-        perror("ioctl: ");
+        perror("ioctl");
         return -1;
     }
 #else
@@ -84,7 +84,6 @@ static int lpty_fork(int master, int slave, int *amaster, char *name,
     default:
         /* Parent. */
         *amaster = master;
-        close(slave);
         return pid;
     }
 }
