@@ -121,6 +121,10 @@ int io_write(int *fd, const char *data, size_t count, size_t *sent,
         return IO_CLOSED;
     /* loop until we send something or we give up on error */
     for (;;) {
+        /* wait until we can send something or we timeout */
+        if ((err = io_waitfd(fd, WAITFD_W, tm)) != IO_DONE)
+            return err;
+
         put = (long)write(*fd, data, count);
         /* if we sent anything, we are done */
         if (put >= 0) {
@@ -140,9 +144,6 @@ int io_write(int *fd, const char *data, size_t count, size_t *sent,
         /* if failed fatal reason, report error */
         if (err != EAGAIN)
             return err;
-        /* wait until we can send something or we timeout */
-        if ((err = io_waitfd(fd, WAITFD_W, tm)) != IO_DONE)
-            return err;
     }
 
     /* can't reach here */
@@ -160,6 +161,9 @@ int io_read(int *fd, char *data, size_t count, size_t *got, timeout_t *tm) {
     if (*fd == IO_FD_INVALID)
         return IO_CLOSED;
     for (;;) {
+        if ((err = io_waitfd(fd, WAITFD_R, tm)) != IO_DONE)
+            return err;
+
         taken = (long)read(*fd, data, count);
         if (taken > 0) {
             *got = taken;
@@ -171,8 +175,6 @@ int io_read(int *fd, char *data, size_t count, size_t *got, timeout_t *tm) {
         if (err == EINTR)
             continue;
         if (err != EAGAIN)
-            return err;
-        if ((err = io_waitfd(fd, WAITFD_R, tm)) != IO_DONE)
             return err;
     }
 
