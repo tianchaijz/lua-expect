@@ -1,5 +1,3 @@
-package.cpath = package.cpath .. "lib/?.so;lib/?.dylib;;"
-
 local Expect = require "expect"
 
 
@@ -8,7 +6,7 @@ if not expect then
     error("expect new error: " .. err)
 end
 
-local ok, err = expect:spawn("/usr/bin/ssh", { "ssh@127.0.0.1", "-p", "22" }, "/tmp")
+local ok, err = expect:spawn("ssh", { "ssh@127.0.0.1", "-p", "22" }, "/tmp")
 if not ok then
     error("expect spawn error: " .. err)
 end
