@@ -8,6 +8,8 @@ static int lpty_login_tty(int slave_fd);
 static int lpty_fork(int master, int slave, int *amaster, char *name,
                      struct termios *termp, struct winsize *winp);
 static int lpty_spawn(lua_State *L);
+static int lpty_open(lua_State *L);
+static int lpty_turn_echoing_off(lua_State *L);
 
 LUALIB_API int luaopen_lpty(lua_State *L);
 
@@ -224,8 +226,33 @@ static int lpty_open(lua_State *L) {
     return 1;
 }
 
+static int lpty_turn_echoing_off(lua_State *L) {
+    struct termios tp;
+
+    if (tcgetattr(STDIN_FILENO, &tp) == -1) {
+        lua_pushnil(L);
+        lua_pushstring(L, "tcgetattr failed");
+        return 2;
+    }
+
+    tp.c_lflag &= ~ECHO;
+
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &tp) == -1) {
+        lua_pushnil(L);
+        lua_pushstring(L, "tcsetattr failed");
+        return 2;
+    }
+
+    lua_pushboolean(L, 1);
+
+    return 1;
+}
+
 static const struct luaL_Reg lpty_funcs[] = {
-    {"open", lpty_open}, {"spawn", lpty_spawn}, {NULL, NULL}};
+    {"open", lpty_open},
+    {"spawn", lpty_spawn},
+    {"turn_echoing_off", lpty_turn_echoing_off},
+    {NULL, NULL}};
 
 int luaopen_lpty(lua_State *L) {
     luaL_register(L, "lpty", lpty_funcs);
