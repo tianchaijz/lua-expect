@@ -1,7 +1,7 @@
 lua-expect
 ====
 
-Lua Expect provides `Expect`(a tool for automating interactive applications)
+lua-expect provides `Expect`(a tool for automating interactive applications)
 support for Lua.
 
 
