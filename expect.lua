@@ -111,7 +111,7 @@ end
 
 
 function _M.clean(self)
-    lio.destory(self.master)
+    lio.destroy(self.master)
 end
 
 
