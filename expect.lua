@@ -59,8 +59,8 @@ end
 
 
 function _M.expect(self, pattern, timeout)
-    if not self.fresh then
-        return find(self.buf, pattern)
+    if not self.fresh and find(self.buf, pattern) then
+        return true
     end
 
     local buf = {}
@@ -81,7 +81,12 @@ function _M.expect(self, pattern, timeout)
     self.fresh = false
     self.buf = concat(buf)
 
-    return find(self.buf, pattern)
+    local pos = find(self.buf, pattern)
+    if pos then
+        return true
+    end
+
+    return nil, "unexpected output: " .. self.buf
 end
 
 

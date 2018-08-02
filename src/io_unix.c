@@ -170,7 +170,7 @@ int io_read(int *fd, char *data, size_t count, size_t *got, timeout_t *tm) {
             return IO_DONE;
         }
         err = errno;
-        if (taken == 0)
+        if (err == EIO) // Got Input/output error after child process exit
             return IO_CLOSED;
         if (err == EINTR)
             continue;

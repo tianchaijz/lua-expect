@@ -41,6 +41,10 @@ while true do
     if #r > 0 then
         for _, obj in ipairs(r) do
             local data, err = lio.read(obj:getfd(), 4096, 0)
+            if err == "closed" then
+                return
+            end
+
             if obj == stdin then
                 buf = buf .. data
             elseif obj == expect then
