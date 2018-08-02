@@ -85,6 +85,7 @@ static int lpty_fork(int master, int slave, int *amaster, char *name,
         return 0;
     default:
         /* Parent. */
+        close(slave);
         *amaster = master;
         return pid;
     }
